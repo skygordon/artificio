@@ -152,7 +152,7 @@ if modelName in ["simpleAE", "convAE"]:
                          range_imgs_reconstruct=[0, 1])
 
 #### My added code for getting activations
-activations = get_activations(model, X_train[1:2],  'conv5_block3_out/Identity:0')
+activations = get_activations(model, X_train[1:2],  'conv5_block3_out')
 # print("layers shown below:")
 # print(activations.keys())
 display_activations(activations)
