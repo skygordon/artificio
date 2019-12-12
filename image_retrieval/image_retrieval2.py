@@ -157,26 +157,6 @@ activations = get_activations(model, X_train[1:2],  'conv5_block3_out')
 # print(activations.keys())
 display_activations(activations)
 
-# Fit kNN model on training images
-# print("Fitting k-nearest-neighbour model on training images...")
-# knn = NearestNeighbors(n_neighbors=5, metric="cosine") # used to be n_neighbors=5
-# print("knn params:")
-# print(get_params(knn))
-# knn.fit(E_train_flatten) # fitting model using E_train_flatten for training data
-
-# Perform image retrieval on test images
-
-# print("Performing image retrieval on test images...")
-# for i, emb_flatten in enumerate(E_test_flatten):
-#     _, indices = knn.kneighbors([emb_flatten]) # find k nearest train neighbours
-#     img_query = imgs_test[i] # query image
-#     imgs_retrieval = [imgs_train[idx] for idx in indices.flatten()] # retrieval images
-#     outFile = os.path.join(outDir, "{}_retrieval_{}.png".format(modelName, i)) # saves nearest neighbors visualization
-#     plot_query_retrieval(img_query, imgs_retrieval, outFile)
-
-
-
-
 
 
 
