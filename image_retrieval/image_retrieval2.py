@@ -16,6 +16,9 @@ from src.CV_transform_utils import apply_transformer
 from src.CV_transform_utils import resize_img, normalize_img
 from src.CV_plot_utils import plot_query_retrieval, plot_tsne, plot_reconstructions
 from src.autoencoder import AutoEncoder
+# I added:
+from keract import get_activations
+from keract import display_activations
 
 # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
 modelName = "ResNet"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
@@ -38,8 +41,8 @@ imgs_test = read_imgs_dir(dataTestDir, extensions, parallel=parallel)
 shape_img = imgs_train[0].shape
 print("Image shape = {}".format(shape_img))
 
-print("Model Name:")
-print(modelName)
+print("Model Name: {}".format(modelName))
+
 # Build models
 if modelName in ["simpleAE", "convAE"]:
 
@@ -77,11 +80,11 @@ elif modelName in ["vgg19", "ResNet"]:
         print("Loading ResNet50 pre-trained model...")
         model = tf.keras.applications.ResNet50(weights='imagenet', include_top=False,  
                                         input_shape=shape_img) 
+        # added because keract raises "Exception: Compilation of the model required." :
+        model.compile(optimizer='adam', loss='categorical_crossentropy', 
+                                        metrics=['accuracy'])
         model.summary()
-    # model = keras.applications.resnet.ResNet50(weights='imagenet', include_top=False,  
-    #                                     input_shape=shape_img) 
-
-
+    
     shape_img_resize = tuple([int(x) for x in model.input.shape[1:]])
     input_shape_model = tuple([int(x) for x in model.input.shape[1:]])
     output_shape_model = tuple([int(x) for x in model.output.shape[1:]])
@@ -116,7 +119,7 @@ X_train = np.array(imgs_train_transformed).reshape((-1,) + input_shape_model)
 X_test = np.array(imgs_test_transformed).reshape((-1,) + input_shape_model)
 print(" -> X_train.shape = {}".format(X_train.shape))
 print(" -> X_test.shape = {}".format(X_test.shape))
-
+print(" -> one image X_train.shape = {}".format(X_train[1:2].shape))
 # Train (if necessary)
 if modelName in ["simpleAE", "convAE"]:
     if trainModel:
@@ -127,15 +130,15 @@ if modelName in ["simpleAE", "convAE"]:
         model.load_models(loss="binary_crossentropy", optimizer="adam")
 
 # Create embeddings using model
-print("Inferencing embeddings using pre-trained model...")
-E_train = model.predict(X_train)
-E_train_flatten = E_train.reshape((-1, np.prod(output_shape_model)))
-E_test = model.predict(X_test)
-E_test_flatten = E_test.reshape((-1, np.prod(output_shape_model)))
-print(" -> E_train.shape = {}".format(E_train.shape))
-print(" -> E_test.shape = {}".format(E_test.shape))
-print(" -> E_train_flatten.shape = {}".format(E_train_flatten.shape))
-print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
+# print("Inferencing embeddings using pre-trained model...")
+# E_train = model.predict(X_train)
+# E_train_flatten = E_train.reshape((-1, np.prod(output_shape_model)))
+# E_test = model.predict(X_test)
+# E_test_flatten = E_test.reshape((-1, np.prod(output_shape_model)))
+# print(" -> E_train.shape = {}".format(E_train.shape))
+# print(" -> E_test.shape = {}".format(E_test.shape))
+# print(" -> E_train_flatten.shape = {}".format(E_train_flatten.shape))
+# print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
 
 # Make reconstruction visualizations
 if modelName in ["simpleAE", "convAE"]:
@@ -148,21 +151,52 @@ if modelName in ["simpleAE", "convAE"]:
                          range_imgs=[0, 255],
                          range_imgs_reconstruct=[0, 1])
 
+#### My added code for getting activations
+activations = get_activations(model, X_train[1:2],  'conv5_block3_out/Identity:0')
+# print("layers shown below:")
+# print(activations.keys())
+display_activations(activations)
+
 # Fit kNN model on training images
-print("Fitting k-nearest-neighbour model on training images...")
-knn = NearestNeighbors(n_neighbors=5, metric="cosine") # used to be n_neighbors=5
-knn.fit(E_train_flatten)
+# print("Fitting k-nearest-neighbour model on training images...")
+# knn = NearestNeighbors(n_neighbors=5, metric="cosine") # used to be n_neighbors=5
+# print("knn params:")
+# print(get_params(knn))
+# knn.fit(E_train_flatten) # fitting model using E_train_flatten for training data
 
 # Perform image retrieval on test images
-print("Performing image retrieval on test images...")
-for i, emb_flatten in enumerate(E_test_flatten):
-    _, indices = knn.kneighbors([emb_flatten]) # find k nearest train neighbours
-    img_query = imgs_test[i] # query image
-    imgs_retrieval = [imgs_train[idx] for idx in indices.flatten()] # retrieval images
-    outFile = os.path.join(outDir, "{}_retrieval_{}.png".format(modelName, i))
-    plot_query_retrieval(img_query, imgs_retrieval, outFile)
 
-# Plot t-SNE visualization
-print("Visualizing t-SNE on training images...")
-outFile = os.path.join(outDir, "{}_tsne.png".format(modelName))
-plot_tsne(E_train_flatten, imgs_train, outFile)
+# print("Performing image retrieval on test images...")
+# for i, emb_flatten in enumerate(E_test_flatten):
+#     _, indices = knn.kneighbors([emb_flatten]) # find k nearest train neighbours
+#     img_query = imgs_test[i] # query image
+#     imgs_retrieval = [imgs_train[idx] for idx in indices.flatten()] # retrieval images
+#     outFile = os.path.join(outDir, "{}_retrieval_{}.png".format(modelName, i)) # saves nearest neighbors visualization
+#     plot_query_retrieval(img_query, imgs_retrieval, outFile)
+
+
+
+
+
+
+
+# ################################  ORIGINAL CODE from anson wong #######################################
+# # Fit kNN model on training images
+# print("Fitting k-nearest-neighbour model on training images...")
+# knn = NearestNeighbors(n_neighbors=5, metric="cosine") # used to be n_neighbors=5
+# knn.fit(E_train_flatten)
+
+# # Perform image retrieval on test images
+# print("Performing image retrieval on test images...")
+# for i, emb_flatten in enumerate(E_test_flatten):
+#     _, indices = knn.kneighbors([emb_flatten]) # find k nearest train neighbours
+#     img_query = imgs_test[i] # query image
+#     imgs_retrieval = [imgs_train[idx] for idx in indices.flatten()] # retrieval images
+#     outFile = os.path.join(outDir, "{}_retrieval_{}.png".format(modelName, i)) # saves nearest neighbors visualization
+#     plot_query_retrieval(img_query, imgs_retrieval, outFile)
+
+# # Plot t-SNE visualization
+# print("Visualizing t-SNE on training images...")
+# outFile = os.path.join(outDir, "{}_tsne.png".format(modelName))
+# plot_tsne(E_train_flatten, imgs_train, outFile)
+# ########################################################################################################
