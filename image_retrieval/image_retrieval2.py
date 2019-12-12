@@ -18,14 +18,14 @@ from src.CV_plot_utils import plot_query_retrieval, plot_tsne, plot_reconstructi
 from src.autoencoder import AutoEncoder
 
 # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-modelName = "vgg19"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
+modelName = "ResNet"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
 trainModel = True
 parallel = True  # use multicore processing
 
 # Make paths
 dataTrainDir = os.path.join(os.getcwd(), "data", "train")
 dataTestDir = os.path.join(os.getcwd(), "data", "test")
-outDir = os.path.join(os.getcwd(), "output1", modelName)
+outDir = os.path.join(os.getcwd(), "output3", modelName)
 if not os.path.exists(outDir):
     os.makedirs(outDir)
 
@@ -81,7 +81,6 @@ elif modelName in ["vgg19", "ResNet"]:
     # model = keras.applications.resnet.ResNet50(weights='imagenet', include_top=False,  
     #                                     input_shape=shape_img) 
 
-    
 
     shape_img_resize = tuple([int(x) for x in model.input.shape[1:]])
     input_shape_model = tuple([int(x) for x in model.input.shape[1:]])
@@ -151,7 +150,7 @@ if modelName in ["simpleAE", "convAE"]:
 
 # Fit kNN model on training images
 print("Fitting k-nearest-neighbour model on training images...")
-knn = NearestNeighbors(n_neighbors=1, metric="cosine") # used to be n_neighbors=5
+knn = NearestNeighbors(n_neighbors=5, metric="cosine") # used to be n_neighbors=5
 knn.fit(E_train_flatten)
 
 # Perform image retrieval on test images
