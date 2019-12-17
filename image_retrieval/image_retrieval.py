@@ -80,9 +80,6 @@ elif modelName in ["vgg19", "ResNet"]:
         model.summary()
     # model = keras.applications.resnet.ResNet50(weights='imagenet', include_top=False,  
     #                                     input_shape=shape_img) 
-
-    
-
     shape_img_resize = tuple([int(x) for x in model.input.shape[1:]])
     input_shape_model = tuple([int(x) for x in model.input.shape[1:]])
     output_shape_model = tuple([int(x) for x in model.output.shape[1:]])
