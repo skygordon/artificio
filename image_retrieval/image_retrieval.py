@@ -18,14 +18,14 @@ from src.CV_plot_utils import plot_query_retrieval, plot_tsne, plot_reconstructi
 from src.autoencoder import AutoEncoder
 
 # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-modelName = "ResNet"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
+modelName = "vgg19"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
 trainModel = True
 parallel = True  # use multicore processing
 
 # Make paths
 dataTrainDir = os.path.join(os.getcwd(), "data", "train")
 dataTestDir = os.path.join(os.getcwd(), "data", "test")
-outDir = os.path.join(os.getcwd(), "output1", modelName)
+outDir = os.path.join(os.getcwd(), "saved_output", modelName)
 if not os.path.exists(outDir):
     os.makedirs(outDir)
 
@@ -145,6 +145,12 @@ if modelName in ["simpleAE", "convAE"]:
                          os.path.join(outDir, "{}_reconstruct.png".format(modelName)),
                          range_imgs=[0, 255],
                          range_imgs_reconstruct=[0, 1])
+
+###### My added code for getting activations ###### not using for this though
+# activations = get_activations(model, X_train[1:2],  'conv5_block3_out')
+# print("layers shown below:")
+# print(activations.keys())
+# display_activations(activations)
 
 # Fit kNN model on training images
 print("Fitting k-nearest-neighbour model on training images...")
