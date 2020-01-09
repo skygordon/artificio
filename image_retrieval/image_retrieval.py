@@ -136,7 +136,6 @@ print(" -> E_train_flatten.shape = {}".format(E_train_flatten.shape))
 print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
 
 ########## Pickling ############
-
 import pickle
 
 for i, image in enumerate(E_train):
@@ -150,6 +149,7 @@ for i, image in enumerate(E_test):
         pickle.dump(image, f)
 
 
+################### NOT USING THIS AS I AM ONLY PICKLING THE FILES ######################
 # # Make reconstruction visualizations
 # if modelName in ["simpleAE", "convAE"]:
 #     print("Visualizing database image reconstructions...")
