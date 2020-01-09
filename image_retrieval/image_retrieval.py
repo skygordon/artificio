@@ -135,54 +135,56 @@ print(" -> E_test.shape = {}".format(E_test.shape))
 print(" -> E_train_flatten.shape = {}".format(E_train_flatten.shape))
 print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
 
-for i in E_train:
+for i, image in enumerate(E_train):
     print(i)
+    print(image)
 ########## Pickling ############
 
+import pickle
 
-# import pickle
-# arr = np.zeros((15,2))
-# for i in E_train:
-#     etrain = 'saved_outputs/etrain/{}.pkl'.format(E_test.shape)
-#     with open('saved_outputs/etrain/  .pkl','wb') as f:
-#         pickle.dump(i, f)
+for i, image in enumerate(E_train):
+    etraincurr = 'saved_outputs/{}/etrain/retrieval_{}.pkl'.format(modelName, i)
+    with open(etraincurr,'wb') as f:
+        pickle.dump(image, f)
 
-# with open('saved_outputs/etest/  .pkl','wb') as f:
-#     pickle.dump(arr, f)
+for i, image in enumerate(E_test):
+    etraincurr = 'saved_outputs/{}/etest/retrieval_{}.pkl'.format(modelName, i)
+    with open(etraincurr,'wb') as f:
+        pickle.dump(image, f)
 
 
-# Make reconstruction visualizations
-if modelName in ["simpleAE", "convAE"]:
-    print("Visualizing database image reconstructions...")
-    imgs_train_reconstruct = model.decoder.predict(E_train)
-    if modelName == "simpleAE":
-        imgs_train_reconstruct = imgs_train_reconstruct.reshape((-1,) + shape_img_resize)
-    plot_reconstructions(imgs_train, imgs_train_reconstruct,
-                         os.path.join(outDir, "{}_reconstruct.png".format(modelName)),
-                         range_imgs=[0, 255],
-                         range_imgs_reconstruct=[0, 1])
+# # Make reconstruction visualizations
+# if modelName in ["simpleAE", "convAE"]:
+#     print("Visualizing database image reconstructions...")
+#     imgs_train_reconstruct = model.decoder.predict(E_train)
+#     if modelName == "simpleAE":
+#         imgs_train_reconstruct = imgs_train_reconstruct.reshape((-1,) + shape_img_resize)
+#     plot_reconstructions(imgs_train, imgs_train_reconstruct,
+#                          os.path.join(outDir, "{}_reconstruct.png".format(modelName)),
+#                          range_imgs=[0, 255],
+#                          range_imgs_reconstruct=[0, 1])
 
-###### My added code for getting activations ###### not using for this though
-# activations = get_activations(model, X_train[1:2],  'conv5_block3_out')
-# print("layers shown below:")
-# print(activations.keys())
-# display_activations(activations)
+# ###### My added code for getting activations ###### not using for this though
+# # activations = get_activations(model, X_train[1:2],  'conv5_block3_out')
+# # print("layers shown below:")
+# # print(activations.keys())
+# # display_activations(activations)
 
-# Fit kNN model on training images
-print("Fitting k-nearest-neighbour model on training images...")
-knn = NearestNeighbors(n_neighbors=1, metric="cosine") # used to be n_neighbors=5
-knn.fit(E_train_flatten)
+# # Fit kNN model on training images
+# print("Fitting k-nearest-neighbour model on training images...")
+# knn = NearestNeighbors(n_neighbors=1, metric="cosine") # used to be n_neighbors=5
+# knn.fit(E_train_flatten)
 
-# Perform image retrieval on test images
-print("Performing image retrieval on test images...")
-for i, emb_flatten in enumerate(E_test_flatten):
-    _, indices = knn.kneighbors([emb_flatten]) # find k nearest train neighbours
-    img_query = imgs_test[i] # query image
-    imgs_retrieval = [imgs_train[idx] for idx in indices.flatten()] # retrieval images
-    outFile = os.path.join(outDir, "{}_retrieval_{}.png".format(modelName, i))
-    plot_query_retrieval(img_query, imgs_retrieval, outFile)
+# # Perform image retrieval on test images
+# print("Performing image retrieval on test images...")
+# for i, emb_flatten in enumerate(E_test_flatten):
+#     _, indices = knn.kneighbors([emb_flatten]) # find k nearest train neighbours
+#     img_query = imgs_test[i] # query image
+#     imgs_retrieval = [imgs_train[idx] for idx in indices.flatten()] # retrieval images
+#     outFile = os.path.join(outDir, "{}_retrieval_{}.png".format(modelName, i))
+#     plot_query_retrieval(img_query, imgs_retrieval, outFile)
 
-# Plot t-SNE visualization
-print("Visualizing t-SNE on training images...")
-outFile = os.path.join(outDir, "{}_tsne.png".format(modelName))
-plot_tsne(E_train_flatten, imgs_train, outFile)
+# # Plot t-SNE visualization
+# print("Visualizing t-SNE on training images...")
+# outFile = os.path.join(outDir, "{}_tsne.png".format(modelName))
+# plot_tsne(E_train_flatten, imgs_train, outFile)
