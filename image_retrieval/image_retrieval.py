@@ -135,6 +135,22 @@ print(" -> E_test.shape = {}".format(E_test.shape))
 print(" -> E_train_flatten.shape = {}".format(E_train_flatten.shape))
 print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
 
+for i in E_train:
+    print(i)
+########## Pickling ############
+
+
+# import pickle
+# arr = np.zeros((15,2))
+# for i in E_train:
+#     etrain = 'saved_outputs/etrain/{}.pkl'.format(E_test.shape)
+#     with open('saved_outputs/etrain/  .pkl','wb') as f:
+#         pickle.dump(i, f)
+
+# with open('saved_outputs/etest/  .pkl','wb') as f:
+#     pickle.dump(arr, f)
+
+
 # Make reconstruction visualizations
 if modelName in ["simpleAE", "convAE"]:
     print("Visualizing database image reconstructions...")
