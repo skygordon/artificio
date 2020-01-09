@@ -18,14 +18,14 @@ from src.CV_plot_utils import plot_query_retrieval, plot_tsne, plot_reconstructi
 from src.autoencoder import AutoEncoder
 
 # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-modelName = "vgg19"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
+modelName = "ResNet"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
 trainModel = True
 parallel = True  # use multicore processing
 
 # Make paths
 dataTrainDir = os.path.join(os.getcwd(), "data", "train")
 dataTestDir = os.path.join(os.getcwd(), "data", "test")
-outDir = os.path.join(os.getcwd(), "saved_output", modelName)
+outDir = os.path.join(os.getcwd(), "output", modelName)
 if not os.path.exists(outDir):
     os.makedirs(outDir)
 
@@ -135,9 +135,6 @@ print(" -> E_test.shape = {}".format(E_test.shape))
 print(" -> E_train_flatten.shape = {}".format(E_train_flatten.shape))
 print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
 
-for i, image in enumerate(E_train):
-    print(i)
-    print(image)
 ########## Pickling ############
 
 import pickle
