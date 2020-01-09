@@ -143,12 +143,12 @@ for i, image in enumerate(E_train):
 import pickle
 
 for i, image in enumerate(E_train):
-    etraincurr = 'saved_outputs/{}/etrain/retrieval_{}.pkl'.format(modelName, i)
+    etraincurr = 'saved_outputs/{}/E_train/retrieval_{}.pkl'.format(modelName, i)
     with open(etraincurr,'wb') as f:
         pickle.dump(image, f)
 
 for i, image in enumerate(E_test):
-    etraincurr = 'saved_outputs/{}/etest/retrieval_{}.pkl'.format(modelName, i)
+    etraincurr = 'saved_outputs/{}/E_test/retrieval_{}.pkl'.format(modelName, i)
     with open(etraincurr,'wb') as f:
         pickle.dump(image, f)
 
