@@ -148,7 +148,7 @@ print(" -> E_test.shape = {}".format(E_test.shape))
 print(" -> E_train_flatten.shape = {}".format(E_train_flatten.shape))
 print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
 
-########## Pickling ############
+########## Pickling ############ I ran this twice, with modelName = "ResNet" and modelName = "vgg19"
 import pickle
 
 for i, image in enumerate(E_train):
@@ -162,7 +162,7 @@ for i, image in enumerate(E_test):
         pickle.dump(image, f)
 
 
-################### NOT USING THIS AS I AM ONLY PICKLING THE FILES ######################
+################### NOT USING THIS AS I AM ONLY PICKLING THE FILES #######################
 # # Make reconstruction visualizations
 # if modelName in ["simpleAE", "convAE"]:
 #     print("Visualizing database image reconstructions...")
@@ -173,12 +173,6 @@ for i, image in enumerate(E_test):
 #                          os.path.join(outDir, "{}_reconstruct.png".format(modelName)),
 #                          range_imgs=[0, 255],
 #                          range_imgs_reconstruct=[0, 1])
-
-# ###### My added code for getting activations ###### not using for this though
-# # activations = get_activations(model, X_train[1:2],  'conv5_block3_out')
-# # print("layers shown below:")
-# # print(activations.keys())
-# # display_activations(activations)
 
 # # Fit kNN model on training images
 # print("Fitting k-nearest-neighbour model on training images...")
