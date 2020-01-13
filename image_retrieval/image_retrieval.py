@@ -154,12 +154,12 @@ print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
 import pickle
 
 for i, image in enumerate(E_train):
-    etraincurr = 'saved_outputs/{}/E_train/retrieval_{}.pkl'.format(modelName, i)
+    etraincurr = 'pickledcifar10/{}/E_train/retrieval_{}.pkl'.format(modelName, i)
     with open(etraincurr,'wb') as f:
         pickle.dump(image, f)
 
 for i, image in enumerate(E_test):
-    etraincurr = 'saved_outputs/{}/E_test/retrieval_{}.pkl'.format(modelName, i)
+    etraincurr = 'pickledcifar10/{}/E_test/retrieval_{}.pkl'.format(modelName, i)
     with open(etraincurr,'wb') as f:
         pickle.dump(image, f)
 
