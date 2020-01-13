@@ -14,7 +14,13 @@ with open('test/sample.pkl','rb') as f:
 
 # print (pickle.load(open("sample.pkl")))
 
+from keras.datasets import cifar10
+# Load the CIFAR10 data.
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
+# Normalize data.
+x_train = x_train.astype('float32') / 255
+x_test = x_test.astype('float32') / 255
 
 # import os
 

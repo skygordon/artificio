@@ -18,25 +18,25 @@ from src.CV_plot_utils import plot_query_retrieval, plot_tsne, plot_reconstructi
 from src.autoencoder import AutoEncoder
 
 # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-modelName = "ResNet"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
+modelName = "vgg19t"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
 trainModel = True
 parallel = True  # use multicore processing
 
 # Make paths
-dataTrainDir = os.path.join(os.getcwd(), "data", "train")
-dataTestDir = os.path.join(os.getcwd(), "data", "test")
-outDir = os.path.join(os.getcwd(), "output", modelName)
+# dataTrainDir = os.path.join(os.getcwd(), "data", "train")
+# dataTestDir = os.path.join(os.getcwd(), "data", "test")
+outDir = os.path.join(os.getcwd(), "pickledcifar10", modelName)
 if not os.path.exists(outDir):
     os.makedirs(outDir)
 
 # Read images
-extensions = [".jpg", ".jpeg"]
-print("Reading train images from '{}'...".format(dataTrainDir))
-imgs_train = read_imgs_dir(dataTrainDir, extensions, parallel=parallel)
-print("Reading test images from '{}'...".format(dataTestDir))
-imgs_test = read_imgs_dir(dataTestDir, extensions, parallel=parallel)
-shape_img = imgs_train[0].shape
-print("Image shape = {}".format(shape_img))
+# extensions = [".jpg", ".jpeg"]
+# print("Reading train images from '{}'...".format(dataTrainDir))
+# imgs_train = read_imgs_dir(dataTrainDir, extensions, parallel=parallel)
+# print("Reading test images from '{}'...".format(dataTestDir))
+# imgs_test = read_imgs_dir(dataTestDir, extensions, parallel=parallel)
+# shape_img = imgs_train[0].shape
+# print("Image shape = {}".format(shape_img))
 
 print("Model Name:")
 print(modelName)
@@ -78,8 +78,7 @@ elif modelName in ["vgg19", "ResNet"]:
         model = tf.keras.applications.ResNet50(weights='imagenet', include_top=False,  
                                         input_shape=shape_img) 
         model.summary()
-    # model = keras.applications.resnet.ResNet50(weights='imagenet', include_top=False,  
-    #                                     input_shape=shape_img) 
+    
     shape_img_resize = tuple([int(x) for x in model.input.shape[1:]])
     input_shape_model = tuple([int(x) for x in model.input.shape[1:]])
     output_shape_model = tuple([int(x) for x in model.output.shape[1:]])
@@ -103,15 +102,25 @@ class ImageTransformer(object):
         img_transformed = normalize_img(img_transformed)
         return img_transformed
 
-transformer = ImageTransformer(shape_img_resize)
-print("Applying image transformer to training images...")
-imgs_train_transformed = apply_transformer(imgs_train, transformer, parallel=parallel)
-print("Applying image transformer to test images...")
-imgs_test_transformed = apply_transformer(imgs_test, transformer, parallel=parallel)
+###################### No need for Cifar10 ########################
+# transformer = ImageTransformer(shape_img_resize)
+# print("Applying image transformer to training images...")
+# imgs_train_transformed = apply_transformer(imgs_train, transformer, parallel=parallel)
+# print("Applying image transformer to test images...")
+# imgs_test_transformed = apply_transformer(imgs_test, transformer, parallel=parallel)
 
 # Convert images to numpy array
-X_train = np.array(imgs_train_transformed).reshape((-1,) + input_shape_model)
-X_test = np.array(imgs_test_transformed).reshape((-1,) + input_shape_model)
+# X_train = np.array(imgs_train_transformed).reshape((-1,) + input_shape_model)
+# X_test = np.array(imgs_test_transformed).reshape((-1,) + input_shape_model)
+###################################################################
+from keras.datasets import cifar10
+# Load the CIFAR10 data.
+(Y_train, Y_train), (X_test, X_test) = cifar10.load_data()
+
+# Normalize data.
+X_train = X_train.astype('float32') / 255
+X_test = X_test.astype('float32') / 255
+######## From OG ########
 print(" -> X_train.shape = {}".format(X_train.shape))
 print(" -> X_test.shape = {}".format(X_test.shape))
 
