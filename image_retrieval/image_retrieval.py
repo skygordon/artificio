@@ -18,7 +18,7 @@ from src.CV_plot_utils import plot_query_retrieval, plot_tsne, plot_reconstructi
 from src.autoencoder import AutoEncoder
 
 # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-modelName = "vgg19t"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
+modelName = "vgg19"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
 trainModel = True
 parallel = True  # use multicore processing
 
