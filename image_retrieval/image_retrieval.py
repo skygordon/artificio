@@ -50,7 +50,7 @@ X_train = X_train.astype('float32') / 255
 X_test = X_test.astype('float32') / 255
 
 # Input image dimensions.
-input_shape = X_train.shape[1:]
+shape_img = X_train.shape[1:]
 
 # Build models
 if modelName in ["simpleAE", "convAE"]:
