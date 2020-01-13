@@ -40,6 +40,18 @@ if not os.path.exists(outDir):
 
 print("Model Name:")
 print(modelName)
+
+from keras.datasets import cifar10
+# Load the CIFAR10 data.
+(X_train, Y_train), (X_test, Y_test) = cifar10.load_data()
+
+# Normalize data.
+X_train = X_train.astype('float32') / 255
+X_test = X_test.astype('float32') / 255
+
+# Input image dimensions.
+input_shape = x_train.shape[1:]
+
 # Build models
 if modelName in ["simpleAE", "convAE"]:
 
@@ -113,13 +125,7 @@ class ImageTransformer(object):
 # X_train = np.array(imgs_train_transformed).reshape((-1,) + input_shape_model)
 # X_test = np.array(imgs_test_transformed).reshape((-1,) + input_shape_model)
 ###################################################################
-from keras.datasets import cifar10
-# Load the CIFAR10 data.
-(X_train, Y_train), (X_test, Y_test) = cifar10.load_data()
 
-# Normalize data.
-X_train = X_train.astype('float32') / 255
-X_test = X_test.astype('float32') / 255
 ######## From OG ########
 print(" -> X_train.shape = {}".format(X_train.shape))
 print(" -> X_test.shape = {}".format(X_test.shape))
