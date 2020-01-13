@@ -115,7 +115,7 @@ class ImageTransformer(object):
 ###################################################################
 from keras.datasets import cifar10
 # Load the CIFAR10 data.
-(Y_train, Y_train), (X_test, X_test) = cifar10.load_data()
+(X_train, Y_train), (X_test, Y_test) = cifar10.load_data()
 
 # Normalize data.
 X_train = X_train.astype('float32') / 255
