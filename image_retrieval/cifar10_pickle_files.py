@@ -1,10 +1,9 @@
 """
 
- image_retrieval.py  (author: Anson Wong / git: ankonzoid)
+ cifar10_pickle_files.py  (author: Skylar Gordon / git: skygordon)
 
- We perform image retrieval using transfer learning on a pre-trained
- VGG image classifier. We plot the k=5 most similar images to our
- query images, as well as the t-SNE visualizations.
+ We collect outputs using transfer learning on a pre-trained
+ VGG or ResNet image classifier for data collection for CNN research utilizing the cifar10 dataset. 
 
 """
 import os
