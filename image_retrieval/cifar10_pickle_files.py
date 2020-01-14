@@ -100,6 +100,21 @@ print(" -> E_test.shape = {}".format(E_test.shape))
 print(" -> E_train_flatten.shape = {}".format(E_train_flatten.shape))
 print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
 
+# Make all the output directories to save the pickle files
+outDirForModel = os.path.join(os.getcwd(), "pickledcifar10", modelName)
+if not os.path.exists(outDirForModel):
+    os.makedirs(outDirForModel)
+
+etrain = 'pickledcifar10/{}/E_train'.format(modelName)
+outDirForModelE_train = os.path.join(os.getcwd(), etrain)
+if not os.path.exists(outDirForModelE_train):
+    os.makedirs(outDirForModelE_train)
+
+etest = 'pickledcifar10/{}/E_test'.format(modelName)
+outDirForModelE_test = os.path.join(os.getcwd(), etest)
+if not os.path.exists(outDirForModelE_test):
+    os.makedirs(outDirForModelE_test)
+
 ########## Pickling ############
 import pickle
 
