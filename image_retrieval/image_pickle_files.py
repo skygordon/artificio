@@ -31,18 +31,6 @@ outDir = os.path.join(os.getcwd(), "output", modelName)
 if not os.path.exists(outDir):
     os.makedirs(outDir)
 
-# from keras.datasets import cifar10
-# # Load the CIFAR10 data.
-# (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-# # Normalize data.
-# x_train = x_train.astype('float32') / 255
-# x_test = x_test.astype('float32') / 255
-# # print shape
-# print('x_train shape:', x_train.shape)
-# print(x_train.shape[0], 'train samples')
-# print(x_test.shape[0], 'test samples')
-# print('y_train shape:', y_train.shape)
-
 # Read images
 extensions = [".jpg", ".jpeg"]
 print("Reading train images from '{}'...".format(dataTrainDir))
@@ -160,35 +148,3 @@ for i, image in enumerate(E_test):
     etraincurr = 'saved_outputs/{}/E_test/retrieval_{}.pkl'.format(modelName, i)
     with open(etraincurr,'wb') as f:
         pickle.dump(image, f)
-
-
-################### NOT USING THIS AS I AM ONLY PICKLING THE FILES #######################
-# # Make reconstruction visualizations
-# if modelName in ["simpleAE", "convAE"]:
-#     print("Visualizing database image reconstructions...")
-#     imgs_train_reconstruct = model.decoder.predict(E_train)
-#     if modelName == "simpleAE":
-#         imgs_train_reconstruct = imgs_train_reconstruct.reshape((-1,) + shape_img_resize)
-#     plot_reconstructions(imgs_train, imgs_train_reconstruct,
-#                          os.path.join(outDir, "{}_reconstruct.png".format(modelName)),
-#                          range_imgs=[0, 255],
-#                          range_imgs_reconstruct=[0, 1])
-
-# # Fit kNN model on training images
-# print("Fitting k-nearest-neighbour model on training images...")
-# knn = NearestNeighbors(n_neighbors=1, metric="cosine") # used to be n_neighbors=5
-# knn.fit(E_train_flatten)
-
-# # Perform image retrieval on test images
-# print("Performing image retrieval on test images...")
-# for i, emb_flatten in enumerate(E_test_flatten):
-#     _, indices = knn.kneighbors([emb_flatten]) # find k nearest train neighbours
-#     img_query = imgs_test[i] # query image
-#     imgs_retrieval = [imgs_train[idx] for idx in indices.flatten()] # retrieval images
-#     outFile = os.path.join(outDir, "{}_retrieval_{}.png".format(modelName, i))
-#     plot_query_retrieval(img_query, imgs_retrieval, outFile)
-
-# # Plot t-SNE visualization
-# print("Visualizing t-SNE on training images...")
-# outFile = os.path.join(outDir, "{}_tsne.png".format(modelName))
-# plot_tsne(E_train_flatten, imgs_train, outFile)
