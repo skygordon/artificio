@@ -3,7 +3,7 @@
  image_pickle_files.py  (author: Skylar Gordon / git: skygordon)
 
  We collect outputs using transfer learning on a pre-trained
- VGG or ResNet image classifier for data collection for CNN research. 
+ VGG or ResNet image classifier for data collection for CNN research using the given dataset from artificio. 
 
 """
 import os
@@ -25,9 +25,6 @@ parallel = True  # use multicore processing
 # Make paths
 dataTrainDir = os.path.join(os.getcwd(), "data", "train")
 dataTestDir = os.path.join(os.getcwd(), "data", "test")
-outDir = os.path.join(os.getcwd(), "output", modelName)
-if not os.path.exists(outDir):
-    os.makedirs(outDir)
 
 # Read images
 extensions = [".jpg", ".jpeg"]
@@ -98,6 +95,21 @@ print(" -> E_train.shape = {}".format(E_train.shape))
 print(" -> E_test.shape = {}".format(E_test.shape))
 print(" -> E_train_flatten.shape = {}".format(E_train_flatten.shape))
 print(" -> E_test_flatten.shape = {}".format(E_test_flatten.shape))
+
+# Make all the output directories to save the pickle files
+outDirForModel = os.path.join(os.getcwd(), "saved_outputs", modelName)
+if not os.path.exists(outDirForModel):
+    os.makedirs(outDirForModel)
+
+etrain = 'saved_outputs/{}/E_train'.format(modelName)
+outDirForModelE_train = os.path.join(os.getcwd(), etrain)
+if not os.path.exists(outDirForModelE_train):
+    os.makedirs(outDirForModelE_train)
+
+etest = 'saved_outputs/{}/E_test'.format(modelName)
+outDirForModelE_test = os.path.join(os.getcwd(), etest)
+if not os.path.exists(outDirForModelE_test):
+    os.makedirs(outDirForModelE_test)
 
 ########## Pickling ############ I ran this twice, with modelName = "ResNet" and modelName = "vgg19"
 import pickle
