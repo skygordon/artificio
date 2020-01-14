@@ -17,10 +17,9 @@ from src.CV_transform_utils import resize_img, normalize_img
 from src.CV_plot_utils import plot_query_retrieval, plot_tsne, plot_reconstructions
 from src.autoencoder import AutoEncoder
 
-
-
 # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-modelName = "ResNet"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
+# We only care about transfer learning with CNNs for our data collection
+modelName = "ResNet"  # try: "vgg19", "ResNet"
 trainModel = True
 parallel = True  # use multicore processing
 
@@ -42,32 +41,8 @@ print("Image shape = {}".format(shape_img))
 print("Model Name: {}".format(modelName))
 
 # Build models
-if modelName in ["simpleAE", "convAE"]:
 
-    # Set up autoencoder
-    info = {
-        "shape_img": shape_img,
-        "autoencoderFile": os.path.join(outDir, "{}_autoecoder.h5".format(modelName)),
-        "encoderFile": os.path.join(outDir, "{}_encoder.h5".format(modelName)),
-        "decoderFile": os.path.join(outDir, "{}_decoder.h5".format(modelName)),
-    }
-    model = AutoEncoder(modelName, info)
-    model.set_arch()
-
-    if modelName == "simpleAE":
-        shape_img_resize = shape_img
-        input_shape_model = (model.encoder.input.shape[1],)
-        output_shape_model = (model.encoder.output.shape[1],)
-        n_epochs = 300
-    elif modelName == "convAE":
-        shape_img_resize = shape_img
-        input_shape_model = tuple([int(x) for x in model.encoder.input.shape[1:]])
-        output_shape_model = tuple([int(x) for x in model.encoder.output.shape[1:]])
-        n_epochs = 500
-    else:
-        raise Exception("Invalid modelName!")
-
-elif modelName in ["vgg19", "ResNet"]:
+if modelName in ["vgg19", "ResNet"]: # used to be elif
     if modelName == "vgg19":
         # Load pre-trained VGG19 model + higher level layers
         print("Loading VGG19 pre-trained model...")
@@ -79,8 +54,7 @@ elif modelName in ["vgg19", "ResNet"]:
         model = tf.keras.applications.ResNet50(weights='imagenet', include_top=False,  
                                         input_shape=shape_img) 
         model.summary()
-    # model = keras.applications.resnet.ResNet50(weights='imagenet', include_top=False,  
-    #                                     input_shape=shape_img) 
+    
     shape_img_resize = tuple([int(x) for x in model.input.shape[1:]])
     input_shape_model = tuple([int(x) for x in model.input.shape[1:]])
     output_shape_model = tuple([int(x) for x in model.output.shape[1:]])
@@ -115,15 +89,6 @@ X_train = np.array(imgs_train_transformed).reshape((-1,) + input_shape_model)
 X_test = np.array(imgs_test_transformed).reshape((-1,) + input_shape_model)
 print(" -> X_train.shape = {}".format(X_train.shape))
 print(" -> X_test.shape = {}".format(X_test.shape))
-
-# Train (if necessary)
-if modelName in ["simpleAE", "convAE"]:
-    if trainModel:
-        model.compile(loss="binary_crossentropy", optimizer="adam")
-        model.fit(X_train, n_epochs=n_epochs, batch_size=256)
-        model.save_models()
-    else:
-        model.load_models(loss="binary_crossentropy", optimizer="adam")
 
 # Create embeddings using model
 print("Inferencing embeddings using pre-trained model...")

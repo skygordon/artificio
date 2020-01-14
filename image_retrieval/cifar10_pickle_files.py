@@ -18,64 +18,31 @@ from src.CV_plot_utils import plot_query_retrieval, plot_tsne, plot_reconstructi
 from src.autoencoder import AutoEncoder
 
 # Run mode: (autoencoder -> simpleAE, convAE) or (transfer learning -> vgg19)
-modelName = "ResNet"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
+# We only care about transfer learning with CNNs for our data collection
+modelName = "ResNet"  # try: "vgg19", "ResNet"
 trainModel = True
 parallel = True  # use multicore processing
 
+# Makes output files
 outDir = os.path.join(os.getcwd(), "pickledcifar10", modelName)
 if not os.path.exists(outDir):
     os.makedirs(outDir)
 
-# Read images
-# extensions = [".jpg", ".jpeg"]
-# print("Reading train images from '{}'...".format(dataTrainDir))
-# imgs_train = read_imgs_dir(dataTrainDir, extensions, parallel=parallel)
-# print("Reading test images from '{}'...".format(dataTestDir))
-# imgs_test = read_imgs_dir(dataTestDir, extensions, parallel=parallel)
-# shape_img = imgs_train[0].shape
-# print("Image shape = {}".format(shape_img))
-
 print("Model Name:")
 print(modelName)
 
+# Import Cifar10 dataset 
 from keras.datasets import cifar10
 # Load the CIFAR10 data.
 (X_train, Y_train), (X_test, Y_test) = cifar10.load_data()
-
 # Normalize data.
 X_train = X_train.astype('float32') / 255
 X_test = X_test.astype('float32') / 255
-
 # Input image dimensions.
 shape_img = X_train.shape[1:]
 
 # Build models
-if modelName in ["simpleAE", "convAE"]:
-
-    # Set up autoencoder
-    info = {
-        "shape_img": shape_img,
-        "autoencoderFile": os.path.join(outDir, "{}_autoecoder.h5".format(modelName)),
-        "encoderFile": os.path.join(outDir, "{}_encoder.h5".format(modelName)),
-        "decoderFile": os.path.join(outDir, "{}_decoder.h5".format(modelName)),
-    }
-    model = AutoEncoder(modelName, info)
-    model.set_arch()
-
-    if modelName == "simpleAE":
-        shape_img_resize = shape_img
-        input_shape_model = (model.encoder.input.shape[1],)
-        output_shape_model = (model.encoder.output.shape[1],)
-        n_epochs = 300
-    elif modelName == "convAE":
-        shape_img_resize = shape_img
-        input_shape_model = tuple([int(x) for x in model.encoder.input.shape[1:]])
-        output_shape_model = tuple([int(x) for x in model.encoder.output.shape[1:]])
-        n_epochs = 500
-    else:
-        raise Exception("Invalid modelName!")
-
-elif modelName in ["vgg19", "ResNet"]:
+if modelName in ["vgg19", "ResNet"]:
     if modelName == "vgg19":
         # Load pre-trained VGG19 model + higher level layers
         print("Loading VGG19 pre-trained model...")
@@ -111,19 +78,6 @@ class ImageTransformer(object):
         img_transformed = normalize_img(img_transformed)
         return img_transformed
 
-###################### No need for Cifar10 ########################
-# transformer = ImageTransformer(shape_img_resize)
-# print("Applying image transformer to training images...")
-# imgs_train_transformed = apply_transformer(imgs_train, transformer, parallel=parallel)
-# print("Applying image transformer to test images...")
-# imgs_test_transformed = apply_transformer(imgs_test, transformer, parallel=parallel)
-
-# Convert images to numpy array
-# X_train = np.array(imgs_train_transformed).reshape((-1,) + input_shape_model)
-# X_test = np.array(imgs_test_transformed).reshape((-1,) + input_shape_model)
-###################################################################
-
-######## From OG ########
 print(" -> X_train.shape = {}".format(X_train.shape))
 print(" -> X_test.shape = {}".format(X_test.shape))
 
