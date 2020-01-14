@@ -1,3 +1,13 @@
+# Query Outputs for CNN Data Collection (Transfer Learning Data)
+Pickles outputs from inferencing with a pretrained CNN Model (either VGG19 or ResNet) with a dataset.
+The files cifar10_pickle_files.py and image_pickle_files.py are used for this process, depending on what dataset you want to use.
+
+### Cifar10 Data
+Uses the Cifar10 dataset to collect the encoded outputs of queries and pickles each
+
+### Given Data
+Uses the set of given images from the artificio repo. to collect the encoded outputs of queries and pickles each
+
 # Image Retrieval (via Autoencoders / Transfer Learning)
 
 Given a set of query images and database images, we perform image retrieval on database images to get the top-k most similar database images using kNN on the image embeddings with cosine similarity as the distance metric. As an example, we provide 36 steakhouse food database images (6 of each food class: steak, potato, french fries, salads, burger, asparagus) and perform similar image retrieval by querying 3 unseen test images.
