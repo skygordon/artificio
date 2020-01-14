@@ -22,9 +22,6 @@ modelName = "ResNet"  # try: "simpleAE", "convAE", "vgg19", "ResNet"
 trainModel = True
 parallel = True  # use multicore processing
 
-# Make paths
-# dataTrainDir = os.path.join(os.getcwd(), "data", "train")
-# dataTestDir = os.path.join(os.getcwd(), "data", "test")
 outDir = os.path.join(os.getcwd(), "pickledcifar10", modelName)
 if not os.path.exists(outDir):
     os.makedirs(outDir)
